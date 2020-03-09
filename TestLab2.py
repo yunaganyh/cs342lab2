@@ -12,7 +12,7 @@ from s1c08 import solveS1C08
 class TestLab2(unittest.TestCase):
 
     '''Here's an example of what some test cases might look like.'''
-
+    @unittest.skip('Not yet implemented')
     def test_s1c01_hexToB64(self):
         testCases = [
             (
@@ -27,7 +27,7 @@ class TestLab2(unittest.TestCase):
         ]
         for hexString, b64String in testCases:
             self.assertEqual(hexToB64(hexString), b64String)
-            self.assertEqual(type(hexToB64(hexString)), str)
+            self.assertEqual(type(hexToB64(hexString)), bytes)
 
     '''One more example.'''
 
@@ -46,7 +46,7 @@ class TestLab2(unittest.TestCase):
         for hexString, b64String in testCases:
             self.assertEqual(b64ToHex(b64String), hexString)
 
-    @unittest.skip('Not yet implemented')
+    # @unittest.skip('Not yet implemented')
     def test_s1c02_xor(self):
         '''
         Starting here, write your own tests. You can generate tests in a variety
@@ -59,19 +59,63 @@ class TestLab2(unittest.TestCase):
         you can work by hand, or generate the test cases using other code you write
         or online calculators.
         '''
-        self.assertEqual(True, False)
+        testCases = [
+            (b'1c0111001f010100061a024b53535009181c', 
+             b'686974207468652062756c6c277320657965',
+             b'746865206b696420646f6e277420706c6179'
+            ),
+            (b'',b'',b''),
+            (b'1234', b'5678', b'444c')
+        ]
+        for hexString1, hexString2, result in testCases:
+            xorred = xor(hexString1, hexString2)
+            self.assertEqual(xorred, result)
+            self.assertEqual(type(xorred), bytes)
 
-    @unittest.skip('Not yet implemented')
+    # @unittest.skip('Not yet implemented')
     def test_s1c03_caesarEncrypt(self):
-        self.assertEqual(True, False)
+        testCases = [
+        (b'0123456789ABCDEF',
+         b'c3e187a54b690f2d',
+         b'C2'
+        ),
+        (b'0123456789ABCDEF',
+         b'5c7e183ad4f690b2',
+         b'5D'
+        ),
+        (b'',b'',b'AF')
+        ]
+        for hexString, cipher, key in testCases:
+            encrypted = caesarEncrypt(hexString, key)
+            self.assertEqual(encrypted, cipher)
+            self.assertEqual(type(encrypted), bytes)
 
-    @unittest.skip('Not yet implemented')
+    # @unittest.skip('Not yet implemented')
     def test_s1c03_caesarDecrypt(self):
-        self.assertEqual(True, False)
+        testCases = [
+        (b'c3e187a54b690f2d',
+         b'0123456789abcdef',
+         b'C2'
+        ),
+        (b'5c7e183ad4f690b2',
+         b'0123456789abcdef',
+         b'5D'
+        ),
+        (b'',b'',b'AF')
+        ]
+        for cipher, message, key in testCases:
+            decrypted = caesarDecrypt(cipher, key)
+            self.assertEqual(decrypted, message)
+            self.assertEqual(type(decrypted), bytes)
 
     @unittest.skip('Not yet implemented')
     def test_s1c03_scoreText(self):
-        self.assertEqual(True, False)
+        # testCases = [
+        # (b''),
+        # (b'deadbeef'),
+        # (b'face')
+        # ]
+        pass
 
 
     '''
