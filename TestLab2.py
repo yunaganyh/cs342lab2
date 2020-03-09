@@ -12,7 +12,7 @@ from s1c08 import solveS1C08
 class TestLab2(unittest.TestCase):
 
     '''Here's an example of what some test cases might look like.'''
-    @unittest.skip('Not yet implemented')
+    # @unittest.skip('Not yet implemented')
     def test_s1c01_hexToB64(self):
         testCases = [
             (
