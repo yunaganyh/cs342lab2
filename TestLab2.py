@@ -1,7 +1,7 @@
 import unittest
 
 from s1c01 import b64ToHex, hexToB64
-from s1c02 import xor
+from s1c02 import xor, hexToBinary
 from s1c03 import solveS1C03, caesarEncrypt, caesarDecrypt, scoreText
 from s1c04 import solveS1C04
 from s1c05 import vigenereEncrypt, vigenereDecrypt
@@ -68,8 +68,8 @@ class TestLab2(unittest.TestCase):
             (b'1234', b'5678', b'444c')
         ]
         for hexString1, hexString2, result in testCases:
-            xorred = xor(hexString1, hexString2)
-            self.assertEqual(xorred, result)
+            xorred = xor(hexToBinary(hexString1), hexToBinary(hexString2))
+            self.assertEqual(xorred, hexToBinary(result))
             self.assertEqual(type(xorred), bytes)
 
     # @unittest.skip('Not yet implemented')
@@ -86,6 +86,9 @@ class TestLab2(unittest.TestCase):
         (b'',b'',b'AF')
         ]
         for hexString, cipher, key in testCases:
+            hexString = hexToBinary(hexString)
+            cipher = hexToBinary(cipher)
+            key = hexToBinary(key)
             encrypted = caesarEncrypt(hexString, key)
             self.assertEqual(encrypted, cipher)
             self.assertEqual(type(encrypted), bytes)
@@ -104,18 +107,25 @@ class TestLab2(unittest.TestCase):
         (b'',b'',b'AF')
         ]
         for cipher, message, key in testCases:
+            message = hexToBinary(message)
+            cipher = hexToBinary(cipher)
+            key = hexToBinary(key)
             decrypted = caesarDecrypt(cipher, key)
             self.assertEqual(decrypted, message)
             self.assertEqual(type(decrypted), bytes)
 
-    @unittest.skip('Not yet implemented')
+    # @unittest.skip('Not yet implemented')
     def test_s1c03_scoreText(self):
-        # testCases = [
-        # (b''),
-        # (b'deadbeef'),
-        # (b'face')
-        # ]
-        pass
+        testCases = [
+        (b'hello world', 33),
+        (b'call me ishmael', 55),
+        (b'!!!!!!!!!!!!!!!', 15)
+        ]
+        for string, res in testCases:
+            score = scoreText(string)
+            self.assertEqual(type(score), int)
+            self.assertEqual(score, res)
+            print(score)
 
 
     '''
