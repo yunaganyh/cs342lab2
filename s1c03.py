@@ -10,7 +10,7 @@ def createElongatedKey(key, length):
     return key*(length // len(key))
 
 def caesarEncrypt(message, key):
-    elongatedKey = createElongatedKey(key, len(message))
+    elongatedKey = createElongatedKey(key, len(message) + 1)
     return s1c02.xor(message, elongatedKey)
 
 '''
@@ -42,19 +42,20 @@ def scoreText(decryptedString):
 
     for i in decryptedList:
         if i in mostCommon:
-            score += 5
+            score += 30
         elif i in leastCommon:
             score -= 5
-        elif (int(i,16) < 0x20 or int(i,16) > 0x7F):
-            score -= 10
-        else:
+        elif (int(i,16) in range(0x21, 0x2f)):
             score += 1
+        elif (int(i,16) < 0x20 or int(i,16) > 0x7F):
+            score -= 100
+        else:
+            score += 10
     return score
 
 def solveS1C03(cipher):
-    keys = [hex(0x0 + i) for i in 16^2]
+    keys = [s1c02.hexToBinary(bytes('{:02x}'.format(i), 'utf-8')) for i in range(0xff)]
     decrypts = [caesarDecrypt(cipher,ki) for ki in keys]
     scores = [scoreText(decr) for decr in decrypts]
-    highest = scores.index(max(scores))
-    return decrypts[highest]
-
+    highest = (decrypts[scores.index(max(scores))], max(scores))
+    return highest
