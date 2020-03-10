@@ -45,8 +45,8 @@ def scoreText(decryptedString):
             score += 30
         elif i in leastCommon:
             score -= 5
-        elif (int(i,16) in range(0x21, 0x2f)):
-            score += 1
+        # elif (int(i,16) in range(0x21, 0x2f)):
+        #     score += 1
         elif (int(i,16) < 0x20 or int(i,16) > 0x7F):
             score -= 100
         else:

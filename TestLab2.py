@@ -154,22 +154,22 @@ class TestLab2(unittest.TestCase):
         this test method, and instead just test the helper methods you write to make
         solveSXCY() methods work.
         '''
-        f =  open("4.txt", "r")
-        bestStrings = []
-        for line in f:
-            #remove newline
-            line = line.rstrip()
-            line = hexToBinary(bytes(line, 'utf-8'))
-            bestStrings.append(solveS1C03(line))
+        testCases = [
+        (b'hello world!', b'C4'),
+        (b'It was a bright cold day in April, and the clocks were striking thirteen.', b'55'),
+        (b'It"s no use going back to yesterday, because I was a different person then.', b'a2'),
+        (b'Who in the world am I?!?!?! Ah, that"s the great puzzle! :D', b'07')
+        ]
+        for hexString, key in testCases:
+            key = hexToBinary(key)
+            encrypted = caesarEncrypt(hexString, key)
+            self.assertEqual(type(encrypted), bytes)
+            decryption = solveS1C03(encrypted)[0]
+            self.assertEqual(decryption, hexString)
 
-        highest = max(bestStrings, key = lambda i : i[1])
-        print(highest)
-        
-        f.close()
-
-    @unittest.skip('Not yet implemented')
+    # @unittest.skip('Not yet implemented')
     def test_s1c04_solveS1C4(self):
-        self.assertEqual(True, False)
+        print(solveS1C04("4.txt"))
 
     @unittest.skip('Not yet implemented')
     def test_s1c05_vigenereEncrypt(self):
