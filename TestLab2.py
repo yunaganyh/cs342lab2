@@ -158,7 +158,8 @@ class TestLab2(unittest.TestCase):
         (b'hello world!', b'C4'),
         (b'It was a bright cold day in April, and the clocks were striking thirteen.', b'55'),
         (b'It"s no use going back to yesterday, because I was a different person then.', b'a2'),
-        (b'Who in the world am I?!?!?! Ah, that"s the great puzzle! :D', b'07')
+        (b'Who in the world am I?!?!?! Ah, that"s the great puzzle! :D', b'07'),
+        (b'"She said that the homework #123#345#456S --- IDK WHAT --- is due on monday!!!":::::', b'73')
         ]
         for hexString, key in testCases:
             key = hexToBinary(key)
