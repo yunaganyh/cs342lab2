@@ -1,7 +1,7 @@
 import unittest
 
 from s1c01 import b64ToHex, hexToB64
-from s1c02 import xor, hexToBinary
+from s1c02 import xor #hexToBinary
 from s1c03 import solveS1C03, caesarEncrypt, caesarDecrypt, scoreText
 from s1c04 import solveS1C04
 from s1c05 import vigenereEncrypt, vigenereDecrypt
@@ -68,8 +68,10 @@ class TestLab2(unittest.TestCase):
             (b'1234', b'5678', b'444c')
         ]
         for hexString1, hexString2, result in testCases:
-            xorred = xor(hexToBinary(hexString1), hexToBinary(hexString2))
-            self.assertEqual(xorred, hexToBinary(result))
+            # xorred = xor(hexToBinary(hexString1), hexToBinary(hexString2))
+            xorred = xor(hexString1, hexString2)
+            # self.assertEqual(xorred, hexToBinary(result))
+            self.assertEqual(xorred, result)
             self.assertEqual(type(xorred), bytes)
 
     # @unittest.skip('Not yet implemented')
@@ -86,9 +88,9 @@ class TestLab2(unittest.TestCase):
         (b'',b'',b'AF')
         ]
         for hexString, cipher, key in testCases:
-            hexString = hexToBinary(hexString)
-            cipher = hexToBinary(cipher)
-            key = hexToBinary(key)
+            # hexString = hexToBinary(hexString)
+            # cipher = hexToBinary(cipher)
+            # key = hexToBinary(key)
             encrypted = caesarEncrypt(hexString, key)
             self.assertEqual(encrypted, cipher)
             self.assertEqual(type(encrypted), bytes)
@@ -113,9 +115,9 @@ class TestLab2(unittest.TestCase):
         (b'',b'',b'AF')
         ]
         for cipher, message, key in testCases:
-            message = hexToBinary(message)
-            cipher = hexToBinary(cipher)
-            key = hexToBinary(key)
+            # message = hexToBinary(message)
+            # cipher = hexToBinary(cipher)
+            # key = hexToBinary(key)
             decrypted = caesarDecrypt(cipher, key)
             self.assertEqual(decrypted, message)
             self.assertEqual(type(decrypted), bytes)
@@ -155,34 +157,43 @@ class TestLab2(unittest.TestCase):
         solveSXCY() methods work.
         '''
         testCases = [
-        (b'hello world!', b'C4'),
+        (b'hello world!', b'c4'),
         (b'It was a bright cold day in April, and the clocks were striking thirteen.', b'55'),
         (b'It"s no use going back to yesterday, because I was a different person then.', b'a2'),
         (b'Who in the world am I?!?!?! Ah, that"s the great puzzle! :D', b'07'),
         (b'"She said that the homework #123#345#456S --- IDK WHAT --- is due on monday!!!":::::', b'73')
         ]
         for hexString, key in testCases:
-            key = hexToBinary(key)
+            # key = hexToBinary(key)
             encrypted = caesarEncrypt(hexString, key)
             self.assertEqual(type(encrypted), bytes)
             decryption = solveS1C03(encrypted)[0]
             self.assertEqual(decryption, hexString)
 
-    # @unittest.skip('Not yet implemented')
+    @unittest.skip('Not yet implemented')
     def test_s1c04_solveS1C4(self):
         print(solveS1C04("4.txt"))
 
-    @unittest.skip('Not yet implemented')
+    # @unittest.skip('Not yet implemented')
     def test_s1c05_vigenereEncrypt(self):
-        self.assertEqual(True, False)
+        testCases = [
+        (b'Burn', b'ICE'),
+        (b'Burning "em, if you ain"t quick and nimble', b'ICE')
+        ]
+        for message, key in testCases:
+            print(vigenereEncrypt(message, key))
 
     @unittest.skip('Not yet implemented')
     def test_s1c05_vigenereDecrypt(self):
         self.assertEqual(True, False)
 
-    @unittest.skip('Not yet implemented')
+    # @unittest.skip('Not yet implemented')
     def test_s1c06_editDistance(self):
-        self.assertEqual(True, False)
+        testCases = [
+        (b'this is a test', b'wokka wokka!!!', 37)
+        ]
+        for s1, s2, res in testCases:
+            self.assertEqual(editDistance(s1,s2), res)
 
     @unittest.skip('Not yet implemented')
     def test_s1c06_solveS1C6(self):
