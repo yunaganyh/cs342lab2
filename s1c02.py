@@ -1,9 +1,6 @@
 import s1c01
 import binascii as ba
 
-# def hexToBinary(hexString):
-#     return 
-
 def xor(s1, s2):
     s3 = []
     for (i,j) in zip(s1,s2):

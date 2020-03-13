@@ -1,5 +1,4 @@
-from s1c03 import solveS1C03 
-# from s1c02 import hexToBinary
+from s1c03 import solveS1C03, hexToBin
 
 def solveS1C04(file):
     f =  open(file, "r")
@@ -7,11 +6,11 @@ def solveS1C04(file):
     for line in f:
         #remove newline
         line = line.rstrip()
-        line = bytes(line, 'utf-8')
-        bestStrings.append(solveS1C03(line))
-
+        line = hexToBin(line.encode())
+        solved = solveS1C03(line)
+        bestStrings.append(solved)
     highest = max(bestStrings, key = lambda i : i[1])
     
     f.close()
-    return highest
+    return highest[0]
 

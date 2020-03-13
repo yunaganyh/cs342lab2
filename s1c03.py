@@ -51,10 +51,16 @@ def scoreText(decryptedString):
             score += 10
     return score
 
+
+def binToHex(binary):
+        return ba.b2a_hex(binary)
+
+def hexToBin(hexString):
+    return ba.a2b_hex(hexString)
+
 def solveS1C03(cipher):
-    # keys = [s1c02.hexToBinary(bytes('{:02x}'.format(i), 'utf-8')) for i in range(0xff)]
-    keys = [bytes(hex(i)[2:], 'utf-8') for i in range(0xff)]
-    decrypts = [caesarDecrypt(cipher,ki) for ki in keys]
+    keys = [bytes(hex(i)[2:].zfill(2), 'utf-8') for i in range(256)]
+    decrypts = [caesarDecrypt(cipher,hexToBin(ki)) for ki in keys]
     scores = [scoreText(decr) for decr in decrypts]
     highest = (decrypts[scores.index(max(scores))], max(scores))
     return highest

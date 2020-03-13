@@ -1,13 +1,16 @@
 import unittest
 
 from s1c01 import b64ToHex, hexToB64
-from s1c02 import xor #hexToBinary
-from s1c03 import solveS1C03, caesarEncrypt, caesarDecrypt, scoreText
+from s1c02 import xor
+from s1c03 import solveS1C03, caesarEncrypt, caesarDecrypt, scoreText, binToHex, hexToBin
 from s1c04 import solveS1C04
 from s1c05 import vigenereEncrypt, vigenereDecrypt
-from s1c06 import editDistance, solveS1C06
+from s1c06 import editDistance, solveS1C06, binary
 from s1c07 import AES_ECB_encrypt, AES_ECB_decrypt
 from s1c08 import solveS1C08
+import binascii as ba
+import codecs
+
 
 class TestLab2(unittest.TestCase):
 
@@ -46,6 +49,7 @@ class TestLab2(unittest.TestCase):
         for hexString, b64String in testCases:
             self.assertEqual(b64ToHex(b64String), hexString)
 
+
     # @unittest.skip('Not yet implemented')
     def test_s1c02_xor(self):
         '''
@@ -68,9 +72,7 @@ class TestLab2(unittest.TestCase):
             (b'1234', b'5678', b'444c')
         ]
         for hexString1, hexString2, result in testCases:
-            # xorred = xor(hexToBinary(hexString1), hexToBinary(hexString2))
-            xorred = xor(hexString1, hexString2)
-            # self.assertEqual(xorred, hexToBinary(result))
+            xorred = binToHex(xor(hexToBin(hexString1), hexToBin(hexString2)))
             self.assertEqual(xorred, result)
             self.assertEqual(type(xorred), bytes)
 
@@ -88,17 +90,14 @@ class TestLab2(unittest.TestCase):
         (b'',b'',b'AF')
         ]
         for hexString, cipher, key in testCases:
-            # hexString = hexToBinary(hexString)
-            # cipher = hexToBinary(cipher)
-            # key = hexToBinary(key)
-            encrypted = caesarEncrypt(hexString, key)
+            encrypted = binToHex(caesarEncrypt(hexToBin(hexString), hexToBin(key)))
             self.assertEqual(encrypted, cipher)
             self.assertEqual(type(encrypted), bytes)
             self.assertEqual(len(hexString), len(cipher))
             #test that can encrypt with all possible hex bytes
-            for i in range(0xff):
-                k = bytes('{:02x}'.format(i), 'utf-8')
-                encrypted = caesarEncrypt(hexString, k)
+            for i in range(256):
+                k = bytes(hex(i)[2:].zfill(2), 'utf-8')
+                encrypted = caesarEncrypt(hexToBin(hexString), hexToBin(k))
 
 
     # @unittest.skip('Not yet implemented')
@@ -115,17 +114,14 @@ class TestLab2(unittest.TestCase):
         (b'',b'',b'AF')
         ]
         for cipher, message, key in testCases:
-            # message = hexToBinary(message)
-            # cipher = hexToBinary(cipher)
-            # key = hexToBinary(key)
-            decrypted = caesarDecrypt(cipher, key)
+            decrypted = binToHex(caesarDecrypt(hexToBin(cipher), hexToBin(key)))
             self.assertEqual(decrypted, message)
             self.assertEqual(type(decrypted), bytes)
             self.assertEqual(len(message), len(decrypted))
             #test that can decrypt with all possible hex bytes
-            for i in range(0xff):
-                k = bytes('{:02x}'.format(i), 'utf-8')
-                decrypted = caesarDecrypt(cipher, k)
+            for i in range(256):
+                k = bytes(hex(i)[2:].zfill(2), 'utf-8')
+                decrypted = caesarDecrypt(hexToBin(cipher), hexToBin(k))
 
     # @unittest.skip('Not yet implemented')
     def test_s1c03_scoreText(self):
@@ -163,12 +159,15 @@ class TestLab2(unittest.TestCase):
         (b'Who in the world am I?!?!?! Ah, that"s the great puzzle! :D', b'07'),
         (b'"She said that the homework #123#345#456S --- IDK WHAT --- is due on monday!!!":::::', b'73')
         ]
-        for hexString, key in testCases:
-            # key = hexToBinary(key)
-            encrypted = caesarEncrypt(hexString, key)
+        for message, key in testCases:
+            encrypted = binToHex(caesarEncrypt(message, hexToBin(key)))
             self.assertEqual(type(encrypted), bytes)
-            decryption = solveS1C03(encrypted)[0]
-            self.assertEqual(decryption, hexString)
+            decrypted = solveS1C03(hexToBin(encrypted))[0]
+            self.assertEqual(decrypted, message)
+        # from cryptopals
+        # result = b"Cooking MC's like a pound of bacon"
+        testString = b'1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736'
+        print(solveS1C03(hexToBin(testString))[0])
 
     @unittest.skip('Not yet implemented')
     def test_s1c04_solveS1C4(self):
@@ -177,15 +176,27 @@ class TestLab2(unittest.TestCase):
     # @unittest.skip('Not yet implemented')
     def test_s1c05_vigenereEncrypt(self):
         testCases = [
-        (b'Burn', b'ICE'),
-        (b'Burning "em, if you ain"t quick and nimble', b'ICE')
+        (b"Burning 'em, if you ain't quick and nimble\nI go crazy when I hear a cymbal", 
+            b'ICE', 
+            b"0b3637272a2b2e63622c2e69692a23693a2a3c6324202d623d63343c2a26226324272765272a282b2f20430a652e2c652a3124333a653e2b2027630c692b20283165286326302e27282f")
         ]
-        for message, key in testCases:
-            print(vigenereEncrypt(message, key))
+        for message, key, cipher in testCases:
+            message = bytes("".join("{:02x}".format(c) for c in message), 'utf-8')
+            key = bytes("".join("{:02x}".format(c) for c in key), 'utf-8')
+            encrypted = binToHex(vigenereEncrypt(hexToBin(message), hexToBin(key)))
+            self.assertEqual(cipher, encrypted)
 
-    @unittest.skip('Not yet implemented')
+    # @unittest.skip('Not yet implemented')
     def test_s1c05_vigenereDecrypt(self):
-        self.assertEqual(True, False)
+        testCases = [
+        (b"Burning 'em, if you ain't quick and nimble\nI go crazy when I hear a cymbal", 
+            b'ICE', 
+            b"0b3637272a2b2e63622c2e69692a23693a2a3c6324202d623d63343c2a26226324272765272a282b2f20430a652e2c652a3124333a653e2b2027630c692b20283165286326302e27282f")
+        ]
+        for message, key, cipher in testCases:
+            key = bytes("".join("{:02x}".format(c) for c in key), 'utf-8')
+            decrypted = vigenereEncrypt(hexToBin(cipher), hexToBin(key))
+            self.assertEqual(message, decrypted)
 
     # @unittest.skip('Not yet implemented')
     def test_s1c06_editDistance(self):
